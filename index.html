@@ -209,32 +209,4 @@
     })
 </script>
 
-
-<script>
-    // Get a reference to the canvas element and its 2d context
-
-    // Function to handle the click event
-    function handleClick(event) {
-        // Get the x and y coordinates of the click event relative to the canvas
-        var x = event.clientX - canvas.getBoundingClientRect().left;
-        var y = event.clientY - canvas.getBoundingClientRect().top;
-
-        // Display the coordinates
-        console.log("X: " + x + ", Y: " + y);
-        points.push([x, y]);
-        
-        pointsCount = points.length;
-        document.getElementById("points").value = pointsCount;
-
-        var event = new Event('change');
-        document.getElementById("points").dispatchEvent(event);
-
-
-        // You can use the x and y values for further processing here
-    }
-    
-        // Add a click event listener to the canvas
-        canvas.addEventListener("click", handleClick);
-    </script>
-
 </html>
