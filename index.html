@@ -178,7 +178,7 @@
     const interval = setInterval(function() {
 
         if (startTime != null && runTime == null) {
-            document.getElementById("duration").textContent = (performance.now() - startTime)/1000 + ' seconds'
+            document.getElementById("duration").textContent = Math.round(((performance.now() - startTime)/1000)/10000) * 10000+ ' seconds'
         } else if (runTime != null) {
             document.getElementById("duration").textContent = runTime + ' seconds'
         }
