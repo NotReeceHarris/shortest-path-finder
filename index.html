@@ -42,8 +42,8 @@
         </div>
     </div>
 
-    <div class="w-full h-full m-5">
-        <canvas class="mx-auto w-full h-full" id="canvas"></canvas>
+    <div class="w-full h-full m-5 flex place-items-center">
+        <canvas class="mx-auto w-[70%] h-[70%]" id="canvas"></canvas>
     </div>
 
 </body>
@@ -82,7 +82,7 @@
         };
 
         while (points.length < p) {
-            const newPoint = [Math.round(Math.random() * w), Math.round(Math.random() * h)];
+            const newPoint = [Math.random() * w, Math.random() * h];
             if (!isTooClose(newPoint, points, minDistance)) {
                 points.push(newPoint);
             }
@@ -109,13 +109,13 @@
         for (var i = 1; i < points.length; i++) {
             ctx.lineTo(points[i][0], points[i][1]);
         }
-        ctx.lineWidth = 2; 
+        ctx.lineWidth = 4; 
         ctx.strokeStyle = '#9ca3af'; // Set the line color to blue
         ctx.stroke();
     }
     const plotPoint = (x, y) => {
         ctx.beginPath();
-        ctx.arc(x, y, 6, 0, Math.PI * 2);
+        ctx.arc(x, y, 8, 0, Math.PI * 2);
         ctx.fillStyle = '#fff'; // Set the point color to red
         ctx.fill();
     }
@@ -193,17 +193,48 @@
 <script src="algorithm.js"></script>
 
 <script>
-    document.getElementById("start").addEventListener('click', () => {
+    document.getElementById("start").addEventListener('click', async () => {
         startTime = performance.now();
+
         for (let i = 0; i < solutions; i++) {
+            await new Promise(r => setTimeout(r, 10));
             document.getElementById("searched").textContent = (i+1) + '/' + solutions;
             document.getElementById("progress").textContent = Math.round((i+1)/solutions*100) + ' percent';
+            path = algorithm(points);
         }
 
-        path = algorithm(points);
+        path = bestPath;
 
         runTime = (performance.now() - startTime)/1000;
     })
 </script>
+
+
+<script>
+    // Get a reference to the canvas element and its 2d context
+
+    // Function to handle the click event
+    function handleClick(event) {
+        // Get the x and y coordinates of the click event relative to the canvas
+        var x = event.clientX - canvas.getBoundingClientRect().left;
+        var y = event.clientY - canvas.getBoundingClientRect().top;
+
+        // Display the coordinates
+        console.log("X: " + x + ", Y: " + y);
+        points.push([x, y]);
+        
+        pointsCount = points.length;
+        document.getElementById("points").value = pointsCount;
+
+        var event = new Event('change');
+        document.getElementById("points").dispatchEvent(event);
+
+
+        // You can use the x and y values for further processing here
+    }
+    
+        // Add a click event listener to the canvas
+        canvas.addEventListener("click", handleClick);
+    </script>
 
 </html>
