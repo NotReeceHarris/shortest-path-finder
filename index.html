@@ -24,7 +24,7 @@
     </style>
 
 </head>
-<body class="bg-[#262626] p-8 flex flex-col w-screen h-screen gap-3">
+<body class="bg-[#262626] p-8 flex w-screen h-screen gap-6">
     <div class="flex flex-col gap-4 w-fit">
         <ul class="text-white">
             <li>Searched: <span class="text-gray-400" id="searched">0/0</span> </li>
@@ -33,8 +33,8 @@
             <li>Best Dst: <span class="text-gray-400" id="best-disatance">0 km</span> </li>
             <li>Distance: <span class="text-gray-400" id="disatance">0 km</span> </li>
             <br>
-            <li>Points: <input type="number" min="3" value="3" class="bg-transparent text-gray-400 remove-arrow" id="points"> </li>
-            <li>Solutions: <span class="text-gray-400" id="solutions">0</span> </li>
+            <li>Points: <input type="number" min="3" value="3" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="points"> </li>
+            <li>Solutions: <span class="text-gray-400 break-all" id="solutions">0</span> </li>
         </ul> 
     
         <div class="flex flex-col gap-2">
@@ -42,16 +42,62 @@
         </div>
     </div>
 
-    <div class="w-full h-full">
-        <canvas class="mx-auto" id="canvas" width="860" height="560"></canvas>
+    <div class="w-full h-full m-5">
+        <canvas class="mx-auto w-full h-full" id="canvas"></canvas>
     </div>
 
 </body>
+
+<script></script>
 
 <script>
     const start = document.getElementById("start");
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    })
+
+    const setup = (w, h, p, minDistance = 50) => {
+        const points = [];
+
+        const calculateDistance = (point1, point2) => {
+            const dx = point1[0] - point2[0];
+            const dy = point1[1] - point2[1];
+            return Math.sqrt(dx * dx + dy * dy);
+        };
+
+        const isTooClose = (newPoint, existingPoints, minDistance) => {
+            for (const existingPoint of existingPoints) {
+                if (calculateDistance(newPoint, existingPoint) < minDistance) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        while (points.length < p) {
+            const newPoint = [Math.round(Math.random() * w), Math.round(Math.random() * h)];
+            if (!isTooClose(newPoint, points, minDistance)) {
+                points.push(newPoint);
+            }
+        }
+
+        return points;
+    };
+
+    var pointsCount = document.getElementById("points").value;
+    var points = setup(canvas.width - 60, canvas.height - 60, pointsCount);
+    var solutions = factorialize(pointsCount-1) / 2
+    var path = [];
+    var bestPath = [];
+    var startTime;
+    var runTime;
 
     const clearCanvas = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -86,7 +132,6 @@
         return Math.round(totalDistance);
     };
 
-
     const plot = (points, path) => {
 
         clearCanvas()
@@ -96,38 +141,15 @@
             plotPath(path)
         };
 
+        if (bestPath.length == 0 || findTotalDistance(path) < findTotalDistance(bestPath)) {
+                bestPath = path;
+                document.getElementById("best-disatance").textContent = findTotalDistance(bestPath) + ' km'
+            }
+
         for (var i = 0; i < points.length; i++) {
             plotPoint(points[i][0], points[i][1]);
         }
     }
-
-    const setup = (w, h, p, minDistance = 30) => {
-        const points = [];
-
-        const calculateDistance = (point1, point2) => {
-            const dx = point1[0] - point2[0];
-            const dy = point1[1] - point2[1];
-            return Math.sqrt(dx * dx + dy * dy);
-        };
-
-        const isTooClose = (newPoint, existingPoints, minDistance) => {
-            for (const existingPoint of existingPoints) {
-                if (calculateDistance(newPoint, existingPoint) < minDistance) {
-                    return true;
-                }
-            }
-            return false;
-        };
-
-        while (points.length < p) {
-            const newPoint = [Math.round(Math.random() * w), Math.round(Math.random() * h)];
-            if (!isTooClose(newPoint, points, minDistance)) {
-                points.push(newPoint);
-            }
-        }
-
-        return points;
-    };
 
     function factorialize(num) {
         if (num < 0) 
@@ -139,16 +161,11 @@
         }
     }
 
-    var pointsCount = document.getElementById("points").value;
-    var points = setup(canvas.width - 60, canvas.height - 60, pointsCount);
-    var path = [];
-    var startTime;
-    var runTime;
-
     document.getElementById("points").addEventListener("change", (e) => {
         pointsCount = e.target.value;
 
-        document.getElementById("solutions").textContent = factorialize(pointsCount-1) / 2;
+        solutions = factorialize(pointsCount-1) / 2;
+        document.getElementById("solutions").textContent = solutions;
 
         points = setup(canvas.width - 60, canvas.height - 60, pointsCount);
         path = [];
@@ -156,7 +173,7 @@
         
     });
     
-    document.getElementById("solutions").textContent = factorialize(pointsCount-1) / 2;
+    document.getElementById("solutions").textContent = solutions;
 
     const interval = setInterval(function() {
 
@@ -167,7 +184,7 @@
         }
 
         if (points.length > 0) plot(points, path);
-    }, 1);
+    }, 0.1);
 
 
 
@@ -178,7 +195,13 @@
 <script>
     document.getElementById("start").addEventListener('click', () => {
         startTime = performance.now();
+        for (let i = 0; i < solutions; i++) {
+            document.getElementById("searched").textContent = (i+1) + '/' + solutions;
+            document.getElementById("progress").textContent = Math.round((i+1)/solutions*100) + ' percent';
+        }
+
         path = algorithm(points);
+
         runTime = (performance.now() - startTime)/1000;
     })
 </script>
