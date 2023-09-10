@@ -3,210 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./assets/tailwind.min.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 
-
-    <style>
-        * {
-            font-family: 'Roboto Mono', monospace;
-        }
-        .remove-arrow::-webkit-inner-spin-button,
-        .remove-arrow::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .remove-arrow {
-            -moz-appearance: textfield;
-        }
-    </style>
+    <style>* {font-family: 'Roboto Mono', monospace;}</style>
 
 </head>
-<body class="bg-[#262626] p-8 flex flex-row w-screen h-screen gap-6">
+<body class="bg-[#222222] p-8 flex flex-col w-screen h-screen gap-6">
     <div class="flex flex-col gap-4 w-fit">
-        <ul class="text-white">
-            <li>Searched: <span class="text-gray-400" id="searched">0/0</span> </li>
-            <li>Progress: <span class="text-gray-400" id="progress">0 percent</span> </li>
-            <li>Duration: <span class="text-gray-400" id="duration">0 seconds</span> </li>
-            <li>Best Dst: <span class="text-gray-400" id="best-disatance">0 km</span> </li>
-            <li>Distance: <span class="text-gray-400" id="disatance">0 km</span> </li>
-            <br>
-            <li>Points: <input type="number" min="3" value="7" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="points"> </li>
-            <li>Solutions: <span class="text-gray-400 break-all" id="solutions">0</span> </li>
-        </ul> 
+        <div class="flex gap-6 flex-col md:flex-row">
+            <ul class="text-white">
+                <li>Searched: <span class="text-gray-400" id="searched">0/0</span> </li>
+                <li>Progress: <span class="text-gray-400" id="progress">0 %</span> </li>
+                <li>Duration: <span class="text-gray-400" id="duration">0 s</span> </li>
+                <li>Best Dst: <span class="text-gray-400" id="best-disatance">0 km</span> </li>
+                <li>Distance: <span class="text-gray-400" id="disatance">0 km</span> </li>
+            </ul> 
+            <ul class="text-white">
+                <li>Points: <input type="number" min="3" value="7" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="points"> </li>
+                <li>Solutions: <span class="text-gray-400 break-all" id="solutions">0</span> </li>
+                <li class="hidden">Ant count: <input type="number" min="1" value="4" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="ant-count"> </li>
+                <li>Algorithm: <select class="bg-[#222222] text-gray-400" id="algorithm">
+                    <option selected class="bg-transparent" value="lucky-path">lucky-path</option>
+                    <option class="bg-transparent" value="ant-colony">ant-colony</option>
+                </select></li>
+            </ul> 
+        </div>
     
-        <div class="flex flex-col gap-2">
-            <button class="bg-white px-4 py-1 rounded-md text-[#262626]" id="start">Start</button>
+        <div class="flex flex-col gap-2 max-w-[190px]">
+            <button class="bg-white px-4 py-1 rounded-md text-[#222222]" id="start">Start</button>
+            <button class="bg-white px-4 py-1 rounded-md text-[#222222] hidden" id="stop">Stop</button>
         </div>
     </div>
 
-    <div class="w-full h-full flex md:place-items-center ">
-        <canvas class="md:mx-auto h-[50vh] w-full md:w-[70%] md:h-[70%]" id="canvas"></canvas>
+    <div class="w-full h-full ">
+        <canvas class="md:mx-auto h-[100%]" id="canvas"></canvas>
     </div>
 
 </body>
 
-<script></script>
-
-<script>
-    const start = document.getElementById("start");
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    })
-
-    const setup = (w, h, p, minDistance = 50) => {
-        const points = [];
-
-        const calculateDistance = (point1, point2) => {
-            const dx = point1[0] - point2[0];
-            const dy = point1[1] - point2[1];
-            return Math.sqrt(dx * dx + dy * dy);
-        };
-
-        const isTooClose = (newPoint, existingPoints, minDistance) => {
-            for (const existingPoint of existingPoints) {
-                if (calculateDistance(newPoint, existingPoint) < minDistance) {
-                    return true;
-                }
-            }
-            return false;
-        };
-
-        while (points.length < p) {
-            const newPoint = [Math.random() * w, Math.random() * h];
-            if (!isTooClose(newPoint, points, minDistance)) {
-                points.push(newPoint);
-            }
-        }
-
-        return points;
-    };
-
-    var pointsCount = document.getElementById("points").value;
-    var points = setup(canvas.width - 60, canvas.height - 60, pointsCount);
-    var solutions = factorialize(pointsCount-1) / 2
-    var path = [];
-    var bestPath = [];
-    var startTime;
-    var runTime;
-
-    const clearCanvas = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    const plotPath = (points) => {
-        ctx.beginPath();
-        ctx.moveTo(points[0][0], points[0][1]);
-        for (var i = 1; i < points.length; i++) {
-            ctx.lineTo(points[i][0], points[i][1]);
-        }
-        ctx.lineWidth = 4; 
-        ctx.strokeStyle = '#9ca3af'; // Set the line color to blue
-        ctx.stroke();
-    }
-    const plotPoint = (x, y) => {
-        ctx.beginPath();
-        ctx.arc(x, y, 8, 0, Math.PI * 2);
-        ctx.fillStyle = '#fff'; // Set the point color to red
-        ctx.fill();
-    }
-
-    const calculateDistance = (point1, point2) => {
-        return Math.sqrt(Math.pow(point2[0] - point1[0], 2) + Math.pow(point2[1] - point1[1], 2));
-    };
-
-    const findTotalDistance = (path) => {
-        let totalDistance = 0;
-        for (let i = 0; i < path.length - 1; i++) {
-            totalDistance += calculateDistance(path[i], path[i + 1]);
-        }
-        return Math.round(totalDistance);
-    };
-
-    const plot = (points, path) => {
-
-        clearCanvas()
-        
-        if (path.length > 0) {
-            document.getElementById("disatance").textContent = findTotalDistance(path) + ' km'
-            plotPath(path)
-        };
-
-        if (bestPath.length == 0 || findTotalDistance(path) < findTotalDistance(bestPath)) {
-                bestPath = path;
-                document.getElementById("best-disatance").textContent = findTotalDistance(bestPath) + ' km'
-            }
-
-        for (var i = 0; i < points.length; i++) {
-            plotPoint(points[i][0], points[i][1]);
-        }
-    }
-
-    function factorialize(num) {
-        if (num < 0) 
-            return -1;
-        else if (num == 0) 
-            return 1;
-        else {
-            return (num * factorialize(num - 1));
-        }
-    }
-
-    document.getElementById("points").addEventListener("change", (e) => {
-        pointsCount = e.target.value;
-
-        solutions = factorialize(pointsCount-1) / 2;
-        document.getElementById("solutions").textContent = solutions;
-
-        points = setup(canvas.width - 60, canvas.height - 60, pointsCount);
-        path = [];
-        plot(points, path);
-        
-    });
-    
-    document.getElementById("solutions").textContent = solutions;
-
-    const interval = setInterval(function() {
-
-        if (startTime != null && runTime == null) {
-            document.getElementById("duration").textContent = Math.round(((performance.now() - startTime)/1000)/10000) * 10000+ ' seconds'
-        } else if (runTime != null) {
-            document.getElementById("duration").textContent = runTime + ' seconds'
-        }
-
-        if (points.length > 0) plot(points, path);
-    }, 0.1);
-
-
-
-</script>
-
-<script src="algorithm.js"></script>
-
-<script>
-    document.getElementById("start").addEventListener('click', async () => {
-        startTime = performance.now();
-
-        for (let i = 0; i < solutions; i++) {
-            await new Promise(r => setTimeout(r, 10));
-            document.getElementById("searched").textContent = (i+1) + '/' + solutions;
-            document.getElementById("progress").textContent = Math.round((i+1)/solutions*100) + ' percent';
-            path = algorithm(points);
-        }
-
-        path = bestPath;
-
-        runTime = (performance.now() - startTime)/1000;
-    })
-</script>
+<script src="./algorithms/lucky-path.js"></script>
+<script src="./algorithms/ant-colony.js"></script>
+<script src="./assets/main.js"></script>
 
 </html>

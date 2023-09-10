@@ -1,6 +1,6 @@
-const algorithm = (points) => {
+const luckyPathAlgorithm = (points) => {
 
-  const path = [];
+  const path = [points[0]];
   
   while (path.length < points.length) {
     const randomPoint = points[Math.floor(Math.random() * points.length)];
@@ -11,12 +11,8 @@ const algorithm = (points) => {
     path.push(randomPoint);
 
     }
-    console.log(path)
   }
 
-
   path.push(points[0]);
-  console.log(path)
   return path;
-
 }
