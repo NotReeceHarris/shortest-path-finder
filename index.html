@@ -33,7 +33,7 @@
             <li>Best Dst: <span class="text-gray-400" id="best-disatance">0 km</span> </li>
             <li>Distance: <span class="text-gray-400" id="disatance">0 km</span> </li>
             <br>
-            <li>Points: <input type="number" min="3" value="3" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="points"> </li>
+            <li>Points: <input type="number" min="3" value="7" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="points"> </li>
             <li>Solutions: <span class="text-gray-400 break-all" id="solutions">0</span> </li>
         </ul> 
     
@@ -43,7 +43,7 @@
     </div>
 
     <div class="w-full h-full flex md:place-items-center ">
-        <canvas class="md:mx-auto h-[50vh] w-full md:w-[70%] md:h-[70%] border md:border-none border-white" id="canvas"></canvas>
+        <canvas class="md:mx-auto h-[50vh] w-full md:w-[70%] md:h-[70%]" id="canvas"></canvas>
     </div>
 
 </body>
@@ -178,7 +178,7 @@
     const interval = setInterval(function() {
 
         if (startTime != null && runTime == null) {
-            document.getElementById("duration").textContent = (performance.now() - startTime)/1000 + ' seconds'
+            document.getElementById("duration").textContent = Math.round(((performance.now() - startTime)/1000)/10000) * 10000+ ' seconds'
         } else if (runTime != null) {
             document.getElementById("duration").textContent = runTime + ' seconds'
         }
