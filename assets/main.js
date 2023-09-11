@@ -10,6 +10,7 @@ const searchedElem = document.getElementById("searched");
 const progressElem = document.getElementById("progress");
 const distanceElem = document.getElementById("disatance");
 const bestDistanceElem = document.getElementById("best-disatance");
+const commitElem = document.getElementById('commit');
 
 var radius = 0;
 var stroke = 0;
@@ -200,6 +201,51 @@ const ctx = canvas.getContext('2d');
         }
     }, 1);
 
+
+    fetch(`https://api.github.com/repos/NotReeceHarris/shortest-path-finder/commits`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`GitHub API request failed with status ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+
+        const setCookie = (cname, cvalue, exdays) => {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            let expires = "expires="+ d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        setCookie('commit_sha', data[0].sha.slice(0,7))
+        setCookie('commit_url', 'https://github.com/NotReeceHarris/shortest-path-finder/tree/' + data[0].sha)
+
+        commitElem.textContent = data[0].sha.slice(0,7)
+        commitElem.setAttribute('href', 'https://github.com/NotReeceHarris/shortest-path-finder/tree/' + data[0].sha)
+    })
+    .catch(error => {
+        const getCookie = (cname) => {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for(let i = 0; i <ca.length; i++) {
+              let c = ca[i];
+              while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+              }
+              if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+              }
+            }
+            return "";
+        }
+
+        commitElem.textContent = getCookie('commit_sha')
+        commitElem.setAttribute('href', getCookie('commit_url'))
+    });
+
+
 })();
 
 function setup(w, h, p, minDistance = 50) {
@@ -293,7 +339,6 @@ function plot(points, path=[], antPos=[]) {
         ctx.fill();
     };
     
-
     const plotPath = (points) => {
         // Begin drawing a path on the canvas.
         ctx.beginPath();
