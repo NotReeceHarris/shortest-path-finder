@@ -104,7 +104,7 @@ const ctx = canvas.getContext('2d');
 
     start.addEventListener('click', async () => {
         // Clear the console for a clean display.
-        console.clear();
+        //console.clear();
 
         // Check if there are fewer than 3 points, which is the minimum required to run the algorithm.
         if (points.length < 3) {
@@ -137,15 +137,20 @@ const ctx = canvas.getContext('2d');
                 refresh = true;
             }
         } else if (algorithm == 'ant-colony') {
-            for (let i = 0; i < solutions; i++) {
+            const antPaths = []
+            for (let i = 0; i < 100; i++) {
                 if (!allowRun) break;
                 // Introduce a small delay for visual progress updates.
                 await new Promise(r => setTimeout(r, 1));
+                const antPath = antColonyAlgorithm(points, canvas.width, canvas.height)
+                antPaths.push(antPath)
                 // Clear the "path" array and execute the antColonyAlgorithm to update the "path" variable.
-                path.length = 0;
-                path = antColonyAlgorithm(points, canvas.width, canvas.height);
+                path = antPath;
                 refresh = true;
             }
+            path = antColonyAlgorithmEvaluation(antPaths, points);
+            ants.length = 0
+            refresh = true;
         }
 
         // Set the "running" flag to false to indicate that the algorithm has finished.
@@ -170,7 +175,6 @@ const ctx = canvas.getContext('2d');
         start.classList.remove('hidden');
         stopBtn.classList.add('hidden');
     });
-
 
     setInterval(function() {
         // Check if the algorithm is currently running and update the duration element accordingly.
@@ -315,8 +319,9 @@ function plot(points, path=[], antPos=[]) {
     // Clear the canvas to remove any previous drawings.
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+
     // Check if the selected algorithm is 'ant-colony'.
-    if (algorithm == 'ant-colony') {
+    if (path.length > 0 && Array.isArray(path[0][0])) {
         // If 'ant-colony' algorithm is selected, plot each path separately.
         for (let p = 0; p < path.length; p++) {
             plotPath(path[p]);
