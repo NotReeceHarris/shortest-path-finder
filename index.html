@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Path finding algorithm</title>
+    <title>Path finding algorithms</title>
     <script src="./assets/tailwind.min.js"></script>
     <link href="./assets/roboto.min.css" rel="stylesheet">
     <link rel="shortcut icon" href="assets/favicon.png" type="image/png">
@@ -16,7 +16,7 @@
     <meta name="author" content="Reece Harris">
   </head>
   <body class="bg-[#222222] p-8 flex flex-col w-screen h-screen gap-6">
-    <div class="flex flex-col gap-4 w-fit">
+    <div class="flex flex-col gap-4 md:w-fit">
       <div class="flex gap-6 flex-col md:flex-row">
         <ul class="text-white min-w-[190px]">
           <li>Searched: <span class="text-gray-400" id="searched">0</span></li>
@@ -26,7 +26,7 @@
           <li>Distance: <span class="text-gray-400" id="disatance">0 km</span></li>
         </ul>
         <ul class="text-white">
-          <li>Points: <input type="number" min="3" value="7" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="points"></li>
+          <li>Points: <input type="number" min="3" value="7" class="md:w-1/2 bg-transparent text-gray-400 remove-arrow" id="points"></li>
           <li>Solutions: <span class="text-gray-400 break-all" id="solutions">0</span></li>
           <li class="hidden">Ant count: <input type="number" min="1" value="4" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="ant-count"></li>
           <li>Algorithm: <select class="bg-[#222222] text-gray-400" id="algorithm">
@@ -35,7 +35,10 @@
             </select></li>
         </ul>
       </div>
-      <div class="flex flex-col gap-2 md:max-w-[190px]"><button class="bg-white px-4 py-1 rounded-md text-[#222222]" id="start">Start</button><button class="bg-white px-4 py-1 rounded-md text-[#222222] hidden" id="stop">Stop</button></div>
+      <div class="flex flex-col gap-2 w-full md:max-w-[190px]">
+        <button class="bg-white px-4 py-1 rounded-md text-[#222222]" id="start">Start</button>
+        <button class="bg-white px-4 py-1 rounded-md text-[#222222] hidden" id="stop">Stop</button>
+        </div>
     </div>
     <div class="w-full h-full flex place-items-center"><canvas class="md:mx-auto w-[100%] md:w-auto md:h-[100%]" id="canvas"></canvas></div>
   </body>

@@ -23,18 +23,18 @@ function extractPheromoneLines(antPaths, points) {
         }
     }
 
-        const dataArray = Object.entries(pheromoneLines);
-        dataArray.sort((a, b) => b[1].count - a[1].count);
+    const dataArray = Object.entries(pheromoneLines);
+    dataArray.sort((a, b) => b[1].count - a[1].count);
 
-        pheromoneLines = [];
+    pheromoneLines = [];
 
-        dataArray.slice(0, points.length).forEach((path) => {
-            pheromoneLines.push(path[1].path)
-        });
+    dataArray.slice(0, points.length).forEach((path) => {
+        pheromoneLines.push(path[1].path)
+    });
 
-        return pheromoneLines
+    return pheromoneLines
 
-    }
+}
 
 const antColonyAlgorithm = (points, w, h) => {
 
