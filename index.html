@@ -1,51 +1,36 @@
 <!doctype html>
 <html>
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./assets/tailwind.min.js"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 
-    <style>* {font-family: 'Roboto Mono', monospace;}</style>
-
-</head>
-<body class="bg-[#222222] p-8 flex flex-col w-screen h-screen gap-6">
+    <link href="./assets/roboto.min.css" rel="stylesheet">
+  </head>
+  <body class="bg-[#222222] p-8 flex flex-col w-screen h-screen gap-6">
     <div class="flex flex-col gap-4 w-fit">
-        <div class="flex gap-6 flex-col md:flex-row">
-            <ul class="text-white">
-                <li>Searched: <span class="text-gray-400" id="searched">0/0</span> </li>
-                <li>Progress: <span class="text-gray-400" id="progress">0 %</span> </li>
-                <li>Duration: <span class="text-gray-400" id="duration">0 s</span> </li>
-                <li>Best Dst: <span class="text-gray-400" id="best-disatance">0 km</span> </li>
-                <li>Distance: <span class="text-gray-400" id="disatance">0 km</span> </li>
-            </ul> 
-            <ul class="text-white">
-                <li>Points: <input type="number" min="3" value="7" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="points"> </li>
-                <li>Solutions: <span class="text-gray-400 break-all" id="solutions">0</span> </li>
-                <li class="hidden">Ant count: <input type="number" min="1" value="4" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="ant-count"> </li>
-                <li>Algorithm: <select class="bg-[#222222] text-gray-400" id="algorithm">
-                    <option selected class="bg-transparent" value="lucky-path">lucky-path</option>
-                    <option class="bg-transparent" value="ant-colony">ant-colony</option>
-                </select></li>
-            </ul> 
-        </div>
-    
-        <div class="flex flex-col gap-2 max-w-[190px]">
-            <button class="bg-white px-4 py-1 rounded-md text-[#222222]" id="start">Start</button>
-            <button class="bg-white px-4 py-1 rounded-md text-[#222222] hidden" id="stop">Stop</button>
-        </div>
+      <div class="flex gap-6 flex-col md:flex-row">
+        <ul class="text-white min-w-[190px]">
+          <li>Searched: <span class="text-gray-400" id="searched">0</span></li>
+          <li>Progress: <span class="text-gray-400" id="progress">0 %</span></li>
+          <li>Duration: <span class="text-gray-400" id="duration">0 s</span></li>
+          <li>Best Dst: <span class="text-gray-400" id="best-disatance">0 km</span></li>
+          <li>Distance: <span class="text-gray-400" id="disatance">0 km</span></li>
+        </ul>
+        <ul class="text-white">
+          <li>Points: <input type="number" min="3" value="7" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="points"></li>
+          <li>Solutions: <span class="text-gray-400 break-all" id="solutions">0</span></li>
+          <li class="hidden">Ant count: <input type="number" min="1" value="4" class="w-1/2 bg-transparent text-gray-400 remove-arrow" id="ant-count"></li>
+          <li>Algorithm: <select class="bg-[#222222] text-gray-400" id="algorithm">
+              <option selected class="bg-transparent" value="lucky-path">lucky-path</option>
+              <option class="bg-transparent" value="ant-colony">ant-colony</option>
+            </select></li>
+        </ul>
+      </div>
+      <div class="flex flex-col gap-2 md:max-w-[190px]"><button class="bg-white px-4 py-1 rounded-md text-[#222222]" id="start">Start</button><button class="bg-white px-4 py-1 rounded-md text-[#222222] hidden" id="stop">Stop</button></div>
     </div>
-
-    <div class="w-full h-full ">
-        <canvas class="md:mx-auto h-[100%]" id="canvas"></canvas>
-    </div>
-
-</body>
-
-<script src="./algorithms/lucky-path.js"></script>
-<script src="./algorithms/ant-colony.js"></script>
-<script src="./assets/main.js"></script>
-
+    <div class="w-full h-full flex place-items-center"><canvas class="md:mx-auto w-[100%] md:w-auto md:h-[100%]" id="canvas"></canvas></div>
+  </body>
+  <script src="./algorithms/lucky-path.js"></script>
+  <script src="./algorithms/ant-colony.js"></script>
+  <script src="./assets/main.js"></script>
 </html>
