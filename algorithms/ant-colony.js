@@ -51,8 +51,6 @@ const antColonyAlgorithm = (points, w, h) => {
         }
         antPath.push([antPath[antPath.length-1][1], antPath[0][1]])
 
-        console.log(antPath)
-
         path.push(...antPath);
     }
     return path;

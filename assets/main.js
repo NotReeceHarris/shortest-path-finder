@@ -101,7 +101,6 @@ const ctx = canvas.getContext('2d');
         // Plot the newly generated points on the canvas.
         plot(points);
     });
-    
 
     start.addEventListener('click', async () => {
         // Clear the console for a clean display.
@@ -241,9 +240,6 @@ function setup(w, h, p, minDistance = 50) {
         }
     }
     
-    // Log the generated points to the console for debugging or visualization.
-    console.log(points);
-    
     // Return the array of generated points.
     return points;
 };
@@ -292,6 +288,7 @@ function plot(points, path=[], antPos=[]) {
         // Fill the ellipse (circle) with the specified color.
         ctx.fill();
     };
+    
 
     const plotPath = (points) => {
         // Begin drawing a path on the canvas.
